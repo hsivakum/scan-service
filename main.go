@@ -50,27 +50,6 @@ func init() {
 func main() {
 	router := gin.New()
 
-	// PostgreSQL connection details
-	dbInfo := url.URL{
-		Scheme:   "postgres",
-		User:     url.UserPassword(os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD")),
-		Host:     fmt.Sprintf("%s:%s", os.Getenv("DB_HOST"), os.Getenv("DB_PORT")),
-		Path:     os.Getenv("DB_NAME"),
-		RawQuery: "sslmode=disable",
-	}
-
-	// Connect to the database
-	db, err := sqlx.Open("postgres", dbInfo.String())
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
-	// Check the connection
-	if err := db.Ping(); err != nil {
-		log.Fatal(err)
-	}
-
 	client := &http.Client{}
 
 	cred, err := azidentity.NewDefaultAzureCredential(nil)
@@ -88,6 +67,32 @@ func main() {
 	azkeysClient, err := azkeys.NewClient(keyVaultURL, cred, nil)
 	if err != nil {
 		panic(err)
+	}
+
+	dbPassword, err := secretClient.GetSecret(context.TODO(), constants.DBPasswordKey, "", nil)
+	if err != nil {
+		panic(err)
+	}
+
+	// PostgreSQL connection details
+	dbInfo := url.URL{
+		Scheme:   "postgres",
+		User:     url.UserPassword(os.Getenv("DB_USER"), *dbPassword.Value),
+		Host:     fmt.Sprintf("%s:%s", os.Getenv("DB_HOST"), os.Getenv("DB_PORT")),
+		Path:     os.Getenv("DB_NAME"),
+		RawQuery: "sslmode=disable",
+	}
+
+	// Connect to the database
+	db, err := sqlx.Open("postgres", dbInfo.String())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	// Check the connection
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
 	}
 
 	githubAPIToken, err := secretClient.GetSecret(context.Background(), constants.GithubAPITokenKey, "", nil)

@@ -96,7 +96,7 @@ func main() {
 	}
 
 	// Kafka broker URLs, replace with your IBM Event Streams broker URLs
-	brokerList := []string{os.Getenv("BROKER_HOST")}
+	brokerList := []string{os.Getenv("KAFKA_HOST")}
 
 	// Create Kafka producer configuration
 	config := sarama.NewConfig()

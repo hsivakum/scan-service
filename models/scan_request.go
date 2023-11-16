@@ -11,6 +11,7 @@ type QueueStatus string
 const (
 	NotQueued QueueStatus = "NotQueued"
 	Queued    QueueStatus = "Queued"
+	Scheduled QueueStatus = "Scheduled"
 	Processed QueueStatus = "Processed"
 )
 

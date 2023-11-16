@@ -13,3 +13,5 @@ CREATE TABLE scan_results
     updated_at           timestamptz,
     deleted_at           timestamptz
 );
+
+CREATE UNIQUE INDEX idx_unique_scan_result ON scan_results (file, url, commit_sha, redacted_secret, detector_name);

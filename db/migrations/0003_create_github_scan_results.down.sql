@@ -14,4 +14,4 @@ CREATE TABLE github_scan_results
     deleted_at            timestamptz
 );
 
-CREATE UNIQUE INDEX idx_unique_github_scan_result ON github_scan_results (file, url, commit_sha, raw, detector_name, detector_display_name, number);
+CREATE UNIQUE INDEX idx_unique_github_scan_result ON github_scan_results (file, url, raw, detector_name, detector_display_name, number);

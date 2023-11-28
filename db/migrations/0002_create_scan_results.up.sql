@@ -6,6 +6,7 @@ CREATE TABLE scan_results
     url                  text,
     commit_sha           text,
     redacted_secret      text,
+    raw                  text,
     detector_name        varchar,
     is_verified          bool,
     scan_completion_time timestamptz,
@@ -14,4 +15,4 @@ CREATE TABLE scan_results
     deleted_at           timestamptz
 );
 
-CREATE UNIQUE INDEX idx_unique_scan_result ON scan_results (file, url, commit_sha, redacted_secret, detector_name);
+CREATE UNIQUE INDEX idx_unique_scan_result ON scan_results (file, url, commit_sha, raw, detector_name);

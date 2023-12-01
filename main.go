@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"scan-service/middleware"
 	"scan-service/models"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
@@ -126,6 +127,7 @@ func main() {
 	scanService := service.NewScanService(scmFactoryService, producer, scanRepository, os.Getenv("TOPIC_NAME"))
 	scanController := controller.NewScanController(scanService)
 
+	router.Use(middleware.CORS())
 	router.Handle(http.MethodPost, "/api/v1/scan", scanController.ProcessRequest)
 
 	port := os.Getenv("PORT")
